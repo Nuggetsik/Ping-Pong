@@ -18,30 +18,47 @@ class GameSprite(pygame.sprite.Sprite):
         self.rect.x = player_x
         self.rect.y = player_y
         self.speed = player_speed
+        
 
     def reset(self):
         win_display.blit(self.image, (self.rect.x, self.rect.y))
 
 #класс игрока
 class Player(GameSprite):
+    def __init__(self, player_image, player_x, player_y, player_speed, player_width, player_height, button_up, button_down):
+        super().__init__(player_image, player_x, player_y, player_speed, player_width, player_height)
+        self.b_u = button_up
+        self.b_d = button_down
     def update(self):
         keys_pressed = pygame.key.get_pressed()
-        if keys_pressed[pygame.K_a]:
-            if self.rect.y > 5:
-                self.rect.x -= self.speed
-        elif keys_pressed[pygame.K_d]:
-            if self.rect.y < win_width - 5:
-                self.rect.x += self.speed
+        if keys_pressed[self.b_u]:
+            if self.rect.y > -20:
+                self.rect.y -= self.speed
+        elif keys_pressed[self.b_d]:
+            if self.rect.y < win_height - 125:
+                self.rect.y += self.speed
             
 
+player1 = Player("racket.png", 5, win_height/3.5, 3, 50, 200, pygame.K_w, pygame.K_s)
+player2 = Player("racket.png", win_width-50, win_height/3.5, 3, 50, 200, pygame.K_UP, pygame.K_DOWN)
+
+ball = GameSprite("ball.png", win_width/2.25+20, win_height/2.5, 2, 50, 50)
 
 clock = pygame.time.Clock()
 FPS = 60
-keys_pressed = pygame.key.get_pressed()
+
 game = True
 
 while game:
     win_display.blit(background, (0, 0))
+    #отображение спрайтов-игроков
+    player1.reset()
+    player2.reset()
+    ball.reset()
+    #перемещение спрайтов-игроков
+    player1.update()
+    player2.update()
+
     for e in pygame.event.get():
         if e.type == pygame.QUIT:
             game = False
