@@ -32,10 +32,10 @@ class Player(GameSprite):
     def update(self):
         keys_pressed = pygame.key.get_pressed()
         if keys_pressed[self.b_u]:
-            if self.rect.y > -20:
+            if self.rect.y > -25:
                 self.rect.y -= self.speed
         elif keys_pressed[self.b_d]:
-            if self.rect.y < win_height - 125:
+            if self.rect.y < win_height - 170:
                 self.rect.y += self.speed
             
 
@@ -44,25 +44,52 @@ player2 = Player("racket.png", win_width-50, win_height/3.5, 3, 50, 200, pygame.
 
 ball = GameSprite("ball.png", win_width/2.25+20, win_height/2.5, 2, 50, 50)
 
+dx = 3
+dy = 3
+pygame.font.init()
+font = pygame.font.SysFont("Arial", 40)
+
+
 clock = pygame.time.Clock()
 FPS = 60
 
 game = True
+finish = False
 
 while game:
-    win_display.blit(background, (0, 0))
-    #отображение спрайтов-игроков
-    player1.reset()
-    player2.reset()
-    ball.reset()
-    #перемещение спрайтов-игроков
-    player1.update()
-    player2.update()
+    if not finish:
+        win_display.blit(background, (0, 0))
+        #отображение спрайтов-игроков
+        player1.reset()
+        player2.reset()
+        ball.reset()
+        #перемещение спрайтов-игроков
+        player1.update()
+        player2.update()
+
+        ball.rect.x += dx
+        ball.rect.y += dy
+
+        if ball.rect.y < 0:
+            dy *= -1
+        
+        elif ball.rect.y > win_height-50:
+            dy *= -1
+
+        if ball.rect.colliderect(player1.rect) or ball.rect.colliderect(player2.rect):
+            dx *= -1
+
+        if ball.rect.x < player1.rect.x:
+            pass_ = font.render("player1 пропустил мяч", True, (255,215,0))
+            win_display.blit(pass_,(100,100))
+            finish = True
+        if ball.rect.x > player2.rect.x:
+            pass_ = font.render("player2 пропустил мяч", True, (255,215,0))
+            win_display.blit(pass_,(100,100))
+            finish = True
 
     for e in pygame.event.get():
         if e.type == pygame.QUIT:
-            game = False
-        
-                
+            game = False             
     clock.tick(FPS)
     pygame.display.update()
