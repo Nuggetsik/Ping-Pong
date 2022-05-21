@@ -56,6 +56,9 @@ pass2 = font.render("Player 2 пропустил мяч", True, (255,215,0))
 pass_player1 = 0
 pass_player2 = 0
 
+
+
+
 clock = pygame.time.Clock()
 FPS = 60
 
@@ -69,6 +72,12 @@ while game:
     player1.reset()
     player2.reset()
     ball.reset()
+
+    pass_pl1_txt = font.render(str(pass_player1), True, (220, 1, 0))
+    pass_pl2_txt = font.render(str(pass_player2), True, (220, 1, 0))
+
+    win_display.blit(pass_pl1_txt, (370,0))
+    win_display.blit(pass_pl2_txt, (410,0))
     if Countdown:
         finish = timer()
         сountdown = 3 - int(finish - start)  
@@ -85,10 +94,8 @@ while game:
 
         ball.rect.x += dx
         ball.rect.y += dy
-        pass_pl1_txt = font.render(str(pass_player1), True, (220, 1, 0))
-        pass_pl2_txt = font.render(str(pass_player2), True, (220, 1, 0))
-        win_display.blit(pass_pl1_txt, (370,0))
-        win_display.blit(pass_pl2_txt, (410,0))
+        
+        
 
         if ball.rect.y < 0:
             dy *= -1
