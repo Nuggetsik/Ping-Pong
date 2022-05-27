@@ -1,3 +1,4 @@
+from numpy import var
 import pygame
 from time import time as timer
 
@@ -63,9 +64,6 @@ win_pl2 = font.render("Player 2 одержал победу", True, (150,215,250
 pass_player1 = 0
 pass_player2 = 0
 
-
-
-
 clock = pygame.time.Clock()
 FPS = 60
 
@@ -74,21 +72,15 @@ finish = True
 Countdown = True
 start_timer = timer()
 while game:
-    win_display.blit(background, (0, 0))
-    #отображение спрайтов-игроков
-    player1.reset()
-    player2.reset()
-    ball.reset()
-
-    pass_pl1_txt = font.render(str(pass_player1), True, (220, 1, 0))
-    pass_pl2_txt = font.render(str(pass_player2), True, (220, 1, 0))
-
-    win_display.blit(pass_pl1_txt, (370,0))
-    win_display.blit(pass_pl2_txt, (410,0))
+    
     #перерыв между раундами
     if Countdown:
         finish_timer = timer()
-        
+        win_display.blit(background, (0, 0))
+        #отображение спрайтов-игроков
+        player1.reset()
+        player2.reset()
+        ball.reset()
         сountdown = 3 - int(finish_timer - start_timer)  
         if сountdown == 0:
             player1.rect.y = player1_y
@@ -96,14 +88,17 @@ while game:
             ball.rect.x, ball.rect.y = ball_x, ball_y
             finish = False
             Countdown = False
-        if сountdown < 0: 
-            del finish_timer
             
-
         timer_ = font.render(str(сountdown), True, (159,250,150))
         win_display.blit(timer_, (390,150))
     
     if not finish:
+        
+        win_display.blit(background, (0, 0))
+        #отображение спрайтов-игроков
+        player1.reset()
+        player2.reset()
+        ball.reset()
         #перемещение спрайтов-игроков
         player1.update()
         player2.update()
@@ -122,12 +117,14 @@ while game:
 
         if ball.rect.x < player1.rect.x:
             finish = True
+            finish_timer = None
             Countdown = True
             win_display.blit(pass1,(250,250))
             pass_player2 += 1
         
         if ball.rect.x > player2.rect.x:
             finish = True
+            finish_timer = None
             Countdown = True
             win_display.blit(pass2,(250,250))
             pass_player1 += 1
@@ -138,7 +135,11 @@ while game:
         if pass_player2 >= 3:
             win_display.blit(win_pl1, (200, 250))
 
+    pass_pl1_txt = font.render(str(pass_player1), True, (220, 1, 0))
+    pass_pl2_txt = font.render(str(pass_player2), True, (220, 1, 0))
 
+    win_display.blit(pass_pl1_txt, (370,0))
+    win_display.blit(pass_pl2_txt, (410,0))
                 
             
            
