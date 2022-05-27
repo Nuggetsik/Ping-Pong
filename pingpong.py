@@ -40,11 +40,11 @@ class Player(GameSprite):
             if self.rect.y < win_height - 170:
                 self.rect.y += self.speed
             
-player1_x, player1_y = win_height/3.5, 3
+player1_x, player1_y = 5, win_height/3.5
 player2_x, player2_y = win_width-50, win_height/3.5
 ball_x, ball_y = win_width/2.25+20, win_height/2.5
 
-player1 = Player("racket.png", 5, player1_x, player1_y, 50, 200, pygame.K_w, pygame.K_s)
+player1 = Player("racket.png", player1_x, player1_y, 3, 50, 200, pygame.K_w, pygame.K_s)
 player2 = Player("racket.png", player2_x, player2_y, 3, 50, 200, pygame.K_UP, pygame.K_DOWN)
 
 ball = GameSprite("ball.png", ball_x, ball_y, 2, 50, 50)
@@ -52,9 +52,13 @@ ball = GameSprite("ball.png", ball_x, ball_y, 2, 50, 50)
 dx = 3
 dy = 3
 pygame.font.init()
-font = pygame.font.SysFont("Arial", 40)
+font = pygame.font.SysFont("Arial", 30)
 pass1 = font.render("Player 1 пропустил мяч", True, (255,215,0))
 pass2 = font.render("Player 2 пропустил мяч", True, (255,215,0))
+
+font1 = pygame.font.SysFont("Helvetica", 50)
+win_pl1 = font.render("Player 1 одержал победу", True, (150,215,250))
+win_pl2 = font.render("Player 2 одержал победу", True, (150,215,250))
 
 pass_player1 = 0
 pass_player2 = 0
@@ -81,6 +85,7 @@ while game:
 
     win_display.blit(pass_pl1_txt, (370,0))
     win_display.blit(pass_pl2_txt, (410,0))
+    #перерыв между раундами
     if Countdown:
         finish_timer = timer()
         
@@ -116,19 +121,28 @@ while game:
             dx *= -1
 
         if ball.rect.x < player1.rect.x:
-            win_display.blit(pass1,(100,100))
-            pass_player2 += 1
             finish = True
             Countdown = True
+            win_display.blit(pass1,(250,250))
+            pass_player2 += 1
         
         if ball.rect.x > player2.rect.x:
-            win_display.blit(pass2,(100,100))
-            pass_player1 += 1
             finish = True
             Countdown = True
+            win_display.blit(pass2,(250,250))
+            pass_player1 += 1
+
+        if pass_player1 >= 3:
+            win_display.blit(win_pl2, (200, 250))
+
+        if pass_player2 >= 3:
+            win_display.blit(win_pl1, (200, 250))
+
+
+                
             
            
-    
+
     for e in pygame.event.get():
         if e.type == pygame.QUIT:
             game = False             
