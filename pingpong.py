@@ -40,11 +40,14 @@ class Player(GameSprite):
             if self.rect.y < win_height - 170:
                 self.rect.y += self.speed
             
+player1_x, player1_y = win_height/3.5, 3
+player2_x, player2_y = win_width-50, win_height/3.5
+ball_x, ball_y = win_width/2.25+20, win_height/2.5
 
-player1 = Player("racket.png", 5, win_height/3.5, 3, 50, 200, pygame.K_w, pygame.K_s)
-player2 = Player("racket.png", win_width-50, win_height/3.5, 3, 50, 200, pygame.K_UP, pygame.K_DOWN)
+player1 = Player("racket.png", 5, player1_x, player1_y, 50, 200, pygame.K_w, pygame.K_s)
+player2 = Player("racket.png", player2_x, player2_y, 3, 50, 200, pygame.K_UP, pygame.K_DOWN)
 
-ball = GameSprite("ball.png", win_width/2.25+20, win_height/2.5, 2, 50, 50)
+ball = GameSprite("ball.png", ball_x, ball_y, 2, 50, 50)
 
 dx = 3
 dy = 3
@@ -63,9 +66,9 @@ clock = pygame.time.Clock()
 FPS = 60
 
 game = True
-
+finish = True
 Countdown = True
-start = timer()
+start_timer = timer()
 while game:
     win_display.blit(background, (0, 0))
     #отображение спрайтов-игроков
@@ -79,14 +82,22 @@ while game:
     win_display.blit(pass_pl1_txt, (370,0))
     win_display.blit(pass_pl2_txt, (410,0))
     if Countdown:
-        finish = timer()
-        сountdown = 3 - int(finish - start)  
+        finish_timer = timer()
+        
+        сountdown = 3 - int(finish_timer - start_timer)  
         if сountdown == 0:
+            player1.rect.y = player1_y
+            player2.rect.y = player2_y
+            ball.rect.x, ball.rect.y = ball_x, ball_y
             finish = False
             Countdown = False
+        if сountdown < 0: 
+            del finish_timer
+            
+
         timer_ = font.render(str(сountdown), True, (159,250,150))
         win_display.blit(timer_, (390,150))
-
+    
     if not finish:
         #перемещение спрайтов-игроков
         player1.update()
@@ -94,8 +105,6 @@ while game:
 
         ball.rect.x += dx
         ball.rect.y += dy
-        
-        
 
         if ball.rect.y < 0:
             dy *= -1
@@ -111,13 +120,15 @@ while game:
             pass_player2 += 1
             finish = True
             Countdown = True
-
+        
         if ball.rect.x > player2.rect.x:
             win_display.blit(pass2,(100,100))
             pass_player1 += 1
             finish = True
             Countdown = True
-
+            
+           
+    
     for e in pygame.event.get():
         if e.type == pygame.QUIT:
             game = False             
