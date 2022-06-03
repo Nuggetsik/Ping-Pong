@@ -1,6 +1,5 @@
-from numpy import var
 import pygame
-from time import time as timer
+import time
 
 
 win_width = 800
@@ -41,17 +40,28 @@ class Player(GameSprite):
             if self.rect.y < win_height - 170:
                 self.rect.y += self.speed
             
-player1_x, player1_y = 5, win_height/3.5
-player2_x, player2_y = win_width-50, win_height/3.5
+player1_x, player1_y = 10, win_height/3.5
+player2_x, player2_y = win_width-35, win_height/3.5
 ball_x, ball_y = win_width/2.25+20, win_height/2.5
 
-player1 = Player("racket.png", player1_x, player1_y, 3, 50, 200, pygame.K_w, pygame.K_s)
-player2 = Player("racket.png", player2_x, player2_y, 3, 50, 200, pygame.K_UP, pygame.K_DOWN)
+player1 = Player("racket.png", player1_x, player1_y, 3, 25, 125, pygame.K_w, pygame.K_s)
+player2 = Player("racket.png", player2_x, player2_y, 3, 25, 125, pygame.K_UP, pygame.K_DOWN)
 
 ball = GameSprite("ball.png", ball_x, ball_y, 2, 50, 50)
 
+def reset_parameters():
+    player1.rect.y = player1_y
+    player2.rect.y = player2_y
+    ball.rect.x, ball.rect.y = ball_x, ball_y
+    
+pass_player1 = 0
+pass_player2 = 0
+
+t = 4
+
 dx = 3
 dy = 3
+
 pygame.font.init()
 font = pygame.font.SysFont("Arial", 30)
 pass1 = font.render("Player 1 пропустил мяч", True, (255,215,0))
@@ -61,44 +71,54 @@ font1 = pygame.font.SysFont("Helvetica", 50)
 win_pl1 = font.render("Player 1 одержал победу", True, (150,215,250))
 win_pl2 = font.render("Player 2 одержал победу", True, (150,215,250))
 
-pass_player1 = 0
-pass_player2 = 0
+pass_pl1_txt = font.render(str(pass_player1), True, (220, 1, 0))
+pass_pl2_txt = font.render(str(pass_player2), True, (220, 1, 0))
+
+
 
 clock = pygame.time.Clock()
 FPS = 60
 
 game = True
 finish = True
-Countdown = True
-start_timer = timer()
+сountdown = True
+
 while game:
-    
+    win_display.blit(background, (0, 0))
+    #отображение спрайтов-игроков
+    player1.reset()
+    player2.reset()
+    ball.reset()
     #перерыв между раундами
-    if Countdown:
-        finish_timer = timer()
-        win_display.blit(background, (0, 0))
-        #отображение спрайтов-игроков
-        player1.reset()
-        player2.reset()
-        ball.reset()
-        сountdown = 3 - int(finish_timer - start_timer)  
-        if сountdown == 0:
-            player1.rect.y = player1_y
-            player2.rect.y = player2_y
-            ball.rect.x, ball.rect.y = ball_x, ball_y
-            finish = False
-            Countdown = False
+    if сountdown:
+        while t:
+            win_display.blit(background, (0, 0))
+            timer = font.render(str(t-1), True, (159,250,150))
+            win_display.blit(timer, (390,150))
             
-        timer_ = font.render(str(сountdown), True, (159,250,150))
-        win_display.blit(timer_, (390,150))
+            #отображение спрайтов-игроков
+            player1.reset()
+            player2.reset()
+            ball.reset()
+
+            time.sleep(1)
+            t -= 1
+
+            for e in pygame.event.get():
+                if e.type == pygame.QUIT:
+                    t = 0
+                    сountdown = False  
+                    game = False     
+                          
+            clock.tick(FPS)
+            pygame.display.update()
+         
+        finish = False
+        сountdown = False
+            
+        
     
     if not finish:
-        
-        win_display.blit(background, (0, 0))
-        #отображение спрайтов-игроков
-        player1.reset()
-        player2.reset()
-        ball.reset()
         #перемещение спрайтов-игроков
         player1.update()
         player2.update()
@@ -118,34 +138,41 @@ while game:
         if ball.rect.x < player1.rect.x:
             finish = True
             finish_timer = None
-            Countdown = True
-            win_display.blit(pass1,(250,250))
+            reset_parameters()
+            t = 4
+            сountdown = True
+            win_display.blit(pass1,(250,300))
             pass_player2 += 1
         
         if ball.rect.x > player2.rect.x:
             finish = True
             finish_timer = None
-            Countdown = True
-            win_display.blit(pass2,(250,250))
+            reset_parameters()
+            t = 4
+            сountdown = True
+            win_display.blit(pass2,(250,170))
             pass_player1 += 1
 
-        if pass_player1 >= 3:
-            win_display.blit(win_pl2, (200, 250))
+    if pass_player1 >= 3:
+        win_display.blit(win_pl2, (200, 250))
+        finish = True
+        сountdown = False
 
-        if pass_player2 >= 3:
-            win_display.blit(win_pl1, (200, 250))
+    if pass_player2 >= 3:
+        win_display.blit(win_pl1, (200, 250))
+        finish = True
+        сountdown = False
 
     pass_pl1_txt = font.render(str(pass_player1), True, (220, 1, 0))
     pass_pl2_txt = font.render(str(pass_player2), True, (220, 1, 0))
 
     win_display.blit(pass_pl1_txt, (370,0))
     win_display.blit(pass_pl2_txt, (410,0))
-                
-            
-           
 
     for e in pygame.event.get():
         if e.type == pygame.QUIT:
             game = False             
     clock.tick(FPS)
     pygame.display.update()
+
+    
