@@ -34,10 +34,10 @@ class Player(GameSprite):
     def update(self):
         keys_pressed = pygame.key.get_pressed()
         if keys_pressed[self.b_u]:
-            if self.rect.y > -25:
+            if self.rect.y > 10:
                 self.rect.y -= self.speed
         elif keys_pressed[self.b_d]:
-            if self.rect.y < win_height - 170:
+            if self.rect.y < win_height - 135:
                 self.rect.y += self.speed
             
 player1_x, player1_y = 10, win_height/3.5
@@ -141,7 +141,7 @@ while game:
             reset_parameters()
             t = 4
             сountdown = True
-            win_display.blit(pass1,(250,300))
+            win_display.blit(pass1,(250,170))
             pass_player2 += 1
         
         if ball.rect.x > player2.rect.x:
@@ -154,12 +154,12 @@ while game:
             pass_player1 += 1
 
     if pass_player1 >= 3:
-        win_display.blit(win_pl2, (200, 250))
+        win_display.blit(win_pl2, (250, 250))
         finish = True
         сountdown = False
 
     if pass_player2 >= 3:
-        win_display.blit(win_pl1, (200, 250))
+        win_display.blit(win_pl1, (250, 250))
         finish = True
         сountdown = False
 
