@@ -76,6 +76,8 @@ pass_pl2_txt = font.render(str(pass_player2), True, (220, 1, 0))
 
 
 
+
+
 clock = pygame.time.Clock()
 FPS = 60
 
@@ -92,11 +94,15 @@ while game:
     #перерыв между раундами
     if сountdown:
         while t:
+            #отображения фона
             win_display.blit(background, (0, 0))
+            #отображения отсчета
             timer = font.render(str(t-1), True, (159,250,150))
             win_display.blit(timer, (390,150))
-            
-            #отображение спрайтов-игроков
+            #отображения счета 
+            win_display.blit(pass_pl1_txt, (370,0))
+            win_display.blit(pass_pl2_txt, (410,0))
+            #отображение спрайтов
             player1.reset()
             player2.reset()
             ball.reset()
@@ -119,13 +125,13 @@ while game:
         
     
     if not finish:
-        #перемещение спрайтов-игроков
+        #перемещение спрайтов
         player1.update()
         player2.update()
 
         ball.rect.x += dx
         ball.rect.y += dy
-
+        #условия отбивания мяча
         if ball.rect.y < 0:
             dy *= -1
         
@@ -135,6 +141,7 @@ while game:
         if ball.rect.colliderect(player1.rect) or ball.rect.colliderect(player2.rect):
             dx *= -1
 
+        #условие забитого гола
         if ball.rect.x < player1.rect.x:
             finish = True
             finish_timer = None
@@ -152,7 +159,7 @@ while game:
             сountdown = True
             win_display.blit(pass2,(250,170))
             pass_player1 += 1
-
+    #условие выигрыша
     if pass_player1 >= 3:
         win_display.blit(win_pl2, (250, 250))
         finish = True
@@ -162,7 +169,7 @@ while game:
         win_display.blit(win_pl1, (250, 250))
         finish = True
         сountdown = False
-
+    #отображения счета
     pass_pl1_txt = font.render(str(pass_player1), True, (220, 1, 0))
     pass_pl2_txt = font.render(str(pass_player2), True, (220, 1, 0))
 
